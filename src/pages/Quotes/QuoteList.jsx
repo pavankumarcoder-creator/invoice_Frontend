@@ -207,29 +207,31 @@ export const QuoteList = () => {
         </div>
 
         {/* Pagination - Bottom Right */}
-        <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/20">
-          <span className="text-slate-500 text-[11px]">
-            Showing {indexOfFirstItem + 1} - {Math.min(indexOfLastItem, totalItems)} of {totalItems} records
-          </span>
-          
-          <div className="flex items-center gap-1.5">
-            <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}>
-              Previous
-            </Button>
+        {totalItems > itemsPerPage && (
+          <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/20">
+            <span className="text-slate-500 text-[11px]">
+              Showing {indexOfFirstItem + 1} - {Math.min(indexOfLastItem, totalItems)} of {totalItems} records
+            </span>
             
-            <div className="flex gap-1 text-[11px] font-bold">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (<button key={p} onClick={() => handlePageChange(p)} className={`w-7 h-7 rounded flex items-center justify-center border cursor-pointer ${currentPage === p
-                ? 'bg-primary border-primary text-white'
-                : 'border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>
-                  {p}
-                </button>))}
-            </div>
+            <div className="flex items-center gap-1.5">
+              <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}>
+                Previous
+              </Button>
+              
+              <div className="flex gap-1 text-[11px] font-bold">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (<button key={p} onClick={() => handlePageChange(p)} className={`w-7 h-7 rounded flex items-center justify-center border cursor-pointer ${currentPage === p
+                  ? 'bg-primary border-primary text-white'
+                  : 'border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>
+                    {p}
+                  </button>))}
+              </div>
 
-            <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)}>
-              Next
-            </Button>
+              <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)}>
+                Next
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
 
       </div>
     </div>);
