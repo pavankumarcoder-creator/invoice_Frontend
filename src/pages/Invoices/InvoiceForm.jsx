@@ -301,7 +301,7 @@ export const InvoiceForm = () => {
 
                   {/* Main Item Form Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
-                    <div className="md:col-span-1">
+                    <div className="md:col-span-2">
                       <Input label="Qty" type="number" min="1" value={item.qty} onChange={(e) => handleUpdateItemField(item.id, 'qty', parseInt(e.target.value, 10) || 1)}/>
                     </div>
                     <div className="md:col-span-3">
@@ -310,13 +310,10 @@ export const InvoiceForm = () => {
                     <div className="md:col-span-2">
                       <Input label="HSN Code" value={item.hsnCode || ''} onChange={(e) => handleUpdateItemField(item.id, 'hsnCode', e.target.value)} placeholder="e.g. 9983"/>
                     </div>
-                    <div className="md:col-span-1">
+                    <div className="md:col-span-2">
                       <Input label="Rate" type="number" value={item.rate || ''} onChange={(e) => handleUpdateItemField(item.id, 'rate', parseFloat(e.target.value) || 0)} placeholder="0.00"/>
                     </div>
-                    <div className="md:col-span-1">
-                      <Input label="Adjust" type="number" value={item.adjustPercent || ''} onChange={(e) => handleUpdateItemField(item.id, 'adjustPercent', parseFloat(e.target.value) || 0)} placeholder="0.00"/>
-                    </div>
-                    <div className="md:col-span-1">
+                    <div className="md:col-span-2">
                       <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">Amount</label>
                       <div className="h-9 flex items-center font-bold font-outfit text-slate-900 dark:text-slate-200 truncate">
                         {sym}{item.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
