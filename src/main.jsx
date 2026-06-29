@@ -66,7 +66,7 @@ const App = () => {
     return (<BrowserRouter>
       <Routes>
         {/* Auth Routes */}
-        <Route path="/" element={<AuthRoute><Login /></AuthRoute>}/>
+        <Route path="/login" element={<AuthRoute><Login /></AuthRoute>}/>
         <Route path="/register" element={<AuthRoute><Register /></AuthRoute>}/>
         <Route path="/forgot-password" element={<AuthRoute><ForgotPassword /></AuthRoute>}/>
 
