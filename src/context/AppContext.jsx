@@ -5,8 +5,16 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 const apiFetch = (url, options = {}) => {
     const targetUrl = url.startsWith('/api') ? `${API_BASE}${url}` : url;
+    const token = localStorage.getItem('jwt_token');
+    const headers = {
+        ...options.headers
+    };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
     return fetch(targetUrl, {
         ...options,
+        headers,
         credentials: 'include'
     });
 };
@@ -165,6 +173,7 @@ export const AppProvider = ({ children }) => {
                 return false;
             const data = await res.json();
             if (data.success) {
+                localStorage.setItem('jwt_token', data.token);
                 setUserProfile(data.user);
                 setIsAuthenticated(true);
                 localStorage.setItem('auth_token', 'true');
@@ -185,6 +194,7 @@ export const AppProvider = ({ children }) => {
         catch (err) {
             console.error(err);
         }
+        localStorage.removeItem('jwt_token');
         setIsAuthenticated(false);
         localStorage.setItem('auth_token', 'false');
     };
