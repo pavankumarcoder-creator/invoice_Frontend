@@ -17,12 +17,11 @@ export const Login = () => {
     const handleLogin = (e) => {
         e.preventDefault();
         const newErrors = {};
-        if (!username)
-            newErrors.username = 'Username is required';
-        if (!email) {
-            newErrors.email = 'Email address is required';
+        if (!username && !email) {
+            newErrors.username = 'Username or Email is required';
+            newErrors.email = 'Username or Email is required';
         }
-        else if (!/\S+@\S+\.\S+/.test(email)) {
+        if (email && !/\S+@\S+\.\S+/.test(email)) {
             newErrors.email = 'Invalid email address';
         }
         if (!password)
