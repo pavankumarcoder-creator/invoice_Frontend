@@ -133,8 +133,8 @@ export const QuoteList = () => {
 
       </div>
 
-      {/* Table Container */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+      {/* Desktop Quotes Table */}
+      <div className="hidden md:block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left border-collapse">
             <thead>
@@ -192,7 +192,6 @@ export const QuoteList = () => {
                     </td>
                   </tr>);
         })}
-
               {currentQuotes.length === 0 && (<tr>
                   <td colSpan={8} className="px-6 py-16 text-center text-slate-400 dark:text-slate-500">
                     <Search className="h-10 w-10 text-slate-300 dark:text-slate-700 mx-auto mb-2"/>
@@ -205,34 +204,92 @@ export const QuoteList = () => {
             </tbody>
           </table>
         </div>
+      </div>
 
-        {/* Pagination - Bottom Right */}
-        {totalItems > itemsPerPage && (
-          <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/20">
-            <span className="text-slate-500 text-[11px]">
-              Showing {indexOfFirstItem + 1} - {Math.min(indexOfLastItem, totalItems)} of {totalItems} records
-            </span>
-            
-            <div className="flex items-center gap-1.5">
-              <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}>
-                Previous
-              </Button>
-              
-              <div className="flex gap-1 text-[11px] font-bold">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (<button key={p} onClick={() => handlePageChange(p)} className={`w-7 h-7 rounded flex items-center justify-center border cursor-pointer ${currentPage === p
-                  ? 'bg-primary border-primary text-white'
-                  : 'border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>
-                    {p}
-                  </button>))}
+      {/* Mobile & Tablet Card Layout */}
+      <div className="md:hidden grid grid-cols-1 gap-4">
+        {currentQuotes.map((q) => {
+          const client = clients.find((c) => c.id === q.clientId);
+          return (
+            <div key={q.id} onClick={() => navigate(`/quotes/preview/${q.id}`)} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm space-y-3 cursor-pointer hover:bg-slate-50/40 dark:hover:bg-slate-800/10 transition-colors">
+              <div className="flex justify-between items-start">
+                <div>
+                  <span className="text-[10px] font-bold text-slate-500 font-outfit uppercase tracking-wider">{q.quoteNumber}</span>
+                  <h3 className="text-sm font-bold text-slate-850 dark:text-slate-200 mt-0.5">{q.title || 'Untitled Quotation'}</h3>
+                </div>
+                <Badge status={q.status}>{q.status}</Badge>
               </div>
-
-              <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)}>
-                Next
-              </Button>
+              
+              <div className="grid grid-cols-2 gap-2 text-slate-500 text-[11px] border-y border-slate-100 dark:border-slate-800/60 py-2.5">
+                <div>
+                  <span className="block text-slate-400 font-semibold uppercase tracking-wider text-[9px]">Client</span>
+                  <span className="font-bold text-slate-700 dark:text-slate-300">{client?.businessName || 'Unknown'}</span>
+                </div>
+                <div>
+                  <span className="block text-slate-400 font-semibold uppercase tracking-wider text-[9px]">Issued Date</span>
+                  <span className="font-medium text-slate-700 dark:text-slate-300">{q.createdDate}</span>
+                </div>
+                <div className="mt-1 col-span-2">
+                  <span className="block text-slate-400 font-semibold uppercase tracking-wider text-[9px]">Total Proposal</span>
+                  <span className="font-bold text-slate-950 dark:text-slate-100 text-sm">{sym}{q.totalDue.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                </div>
+              </div>
+              
+              <div className="flex justify-between items-center pt-1" onClick={(e) => e.stopPropagation()}>
+                <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                  <Calendar className="h-3 w-3" /> Valid: {q.validUntilDate}
+                </span>
+                <div className="flex gap-1.5">
+                  <Link to={`/quotes/preview/${q.id}`} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-primary transition-colors">
+                    <Eye className="h-4.5 w-4.5"/>
+                  </Link>
+                  {q.status === 'Draft' && (
+                    <Link to={`/quotes/edit/${q.id}`} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
+                      <Edit className="h-4.5 w-4.5"/>
+                    </Link>
+                  )}
+                  <button onClick={(e) => handleDelete(q.id, q.quoteNumber, e)} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-danger transition-colors cursor-pointer">
+                    <Trash2 className="h-4.5 w-4.5"/>
+                  </button>
+                </div>
+              </div>
             </div>
+          );
+        })}
+        {currentQuotes.length === 0 && (
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 text-center text-slate-400 dark:text-slate-500">
+            <Search className="h-10 w-10 text-slate-300 mx-auto mb-2"/>
+            <p className="text-sm font-semibold">No quotations issued yet</p>
           </div>
         )}
-
       </div>
+
+      {/* Pagination - Bottom Right */}
+      {totalItems > itemsPerPage && (
+        <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/20">
+          <span className="text-slate-500 text-[11px]">
+            Showing {indexOfFirstItem + 1} - {Math.min(indexOfLastItem, totalItems)} of {totalItems} records
+          </span>
+          
+          <div className="flex items-center gap-1.5">
+            <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}>
+              Previous
+            </Button>
+            
+            <div className="flex gap-1 text-[11px] font-bold">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (<button key={p} onClick={() => handlePageChange(p)} className={`w-7 h-7 rounded flex items-center justify-center border cursor-pointer ${currentPage === p
+                ? 'bg-primary border-primary text-white'
+                : 'border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>
+                  {p}
+                </button>))}
+            </div>
+
+            <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)}>
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
+
     </div>);
 };
