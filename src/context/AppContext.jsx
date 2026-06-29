@@ -1,5 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { INITIAL_USER_PROFILE, DEFAULT_SETTINGS } from '../constants/dummyData';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+
+const apiFetch = (url, options = {}) => {
+    const targetUrl = url.startsWith('/api') ? `${API_BASE}${url}` : url;
+    return apiFetch(targetUrl, {
+        ...options,
+        credentials: 'include'
+    });
+};
+
 const AppContext = createContext(undefined);
 export const useApp = () => {
     const context = useContext(AppContext);
@@ -22,7 +33,7 @@ export const AppProvider = ({ children }) => {
     const [sentEmails, setSentEmails] = useState([]);
     // 1. Initial auth check & profile loading
     useEffect(() => {
-        fetch('/api/auth/me')
+        apiFetch('/api/auth/me')
             .then((res) => {
             if (res.ok)
                 return res.json();
@@ -41,27 +52,27 @@ export const AppProvider = ({ children }) => {
     // 2. Fetch user data on successful authentication
     useEffect(() => {
         if (isAuthenticated) {
-            fetch('/api/clients')
+            apiFetch('/api/clients')
                 .then((res) => (res.ok ? res.json() : []))
                 .then((data) => setClients(data))
                 .catch((err) => console.error('Error fetching clients:', err));
-            fetch('/api/invoices')
+            apiFetch('/api/invoices')
                 .then((res) => (res.ok ? res.json() : []))
                 .then((data) => setInvoices(data))
                 .catch((err) => console.error('Error fetching invoices:', err));
-            fetch('/api/quotes')
+            apiFetch('/api/quotes')
                 .then((res) => (res.ok ? res.json() : []))
                 .then((data) => setQuotations(data))
                 .catch((err) => console.error('Error fetching quotes:', err));
-            fetch('/api/settings')
+            apiFetch('/api/settings')
                 .then((res) => (res.ok ? res.json() : DEFAULT_SETTINGS))
                 .then((data) => setSettings(data))
                 .catch((err) => console.error('Error fetching settings:', err));
-            fetch('/api/logs')
+            apiFetch('/api/logs')
                 .then((res) => (res.ok ? res.json() : []))
                 .then((data) => setLogs(data))
                 .catch((err) => console.error('Error fetching logs:', err));
-            fetch('/api/emails')
+            apiFetch('/api/emails')
                 .then((res) => (res.ok ? res.json() : []))
                 .then((data) => setSentEmails(data))
                 .catch((err) => console.error('Error fetching emails:', err));
@@ -145,7 +156,7 @@ export const AppProvider = ({ children }) => {
     // Auth Operations
     const login = async (username, email, password) => {
         try {
-            const res = await fetch('/api/auth/login', {
+            const res = await apiFetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, email, password })
@@ -169,7 +180,7 @@ export const AppProvider = ({ children }) => {
     };
     const logout = async () => {
         try {
-            await fetch('/api/auth/logout', { method: 'POST' });
+            await apiFetch('/api/auth/logout', { method: 'POST' });
         }
         catch (err) {
             console.error(err);
@@ -180,7 +191,7 @@ export const AppProvider = ({ children }) => {
     const updateUserProfile = (profile) => {
         setUserProfile((prev) => {
             const merged = { ...prev, ...profile };
-            fetch('/api/auth/me', {
+            apiFetch('/api/auth/me', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(profile)
@@ -196,7 +207,7 @@ export const AppProvider = ({ children }) => {
             id: `cli_${Date.now()}`
         };
         setClients((prev) => [newClient, ...prev]);
-        fetch('/api/clients', {
+        apiFetch('/api/clients', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newClient)
@@ -208,7 +219,7 @@ export const AppProvider = ({ children }) => {
         setClients((prev) => prev.map((c) => {
             if (c.id === id) {
                 const updated = { ...c, ...clientData };
-                fetch(`/api/clients/${id}`, {
+                apiFetch(`/api/clients/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(updated)
@@ -222,7 +233,7 @@ export const AppProvider = ({ children }) => {
     const deleteClient = (id) => {
         const client = clients.find((c) => c.id === id);
         setClients((prev) => prev.filter((c) => c.id !== id));
-        fetch(`/api/clients/${id}`, { method: 'DELETE' }).catch((err) => console.error(err));
+        apiFetch(`/api/clients/${id}`, { method: 'DELETE' }).catch((err) => console.error(err));
         addLog('settings_update', `Client deleted: ${client?.businessName || id}`);
     };
     // Invoice Operations
@@ -243,7 +254,7 @@ export const AppProvider = ({ children }) => {
                     }
                 };
                 setSettings(newSettings);
-                fetch('/api/settings', {
+                apiFetch('/api/settings', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(newSettings)
@@ -258,7 +269,7 @@ export const AppProvider = ({ children }) => {
             ...calculated
         };
         setInvoices((prev) => [newInvoice, ...prev]);
-        fetch('/api/invoices', {
+        apiFetch('/api/invoices', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newInvoice)
@@ -272,7 +283,7 @@ export const AppProvider = ({ children }) => {
                 const merged = { ...inv, ...invoiceData };
                 const calculated = recalculateInvoiceTotals(merged, settings.tax.taxPercentage);
                 const updated = { ...merged, ...calculated };
-                fetch(`/api/invoices/${id}`, {
+                apiFetch(`/api/invoices/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(updated)
@@ -286,7 +297,7 @@ export const AppProvider = ({ children }) => {
     const deleteInvoice = (id) => {
         const inv = invoices.find((invoice) => invoice.id === id);
         setInvoices((prev) => prev.filter((invoice) => invoice.id !== id));
-        fetch(`/api/invoices/${id}`, { method: 'DELETE' }).catch((err) => console.error(err));
+        apiFetch(`/api/invoices/${id}`, { method: 'DELETE' }).catch((err) => console.error(err));
         addLog('settings_update', `Invoice deleted: ${inv?.invoiceNumber || id}`);
     };
     const addPayment = (invoiceId, paymentData) => {
@@ -309,7 +320,7 @@ export const AppProvider = ({ children }) => {
                     paidAmount: totalPaid,
                     status: newStatus
                 };
-                fetch(`/api/invoices/${invoiceId}/payments`, {
+                apiFetch(`/api/invoices/${invoiceId}/payments`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(newPayment)
@@ -341,7 +352,7 @@ export const AppProvider = ({ children }) => {
                     paidAmount: totalPaid,
                     status: newStatus
                 };
-                fetch(`/api/invoices/${invoiceId}/payments/${paymentId}`, {
+                apiFetch(`/api/invoices/${invoiceId}/payments/${paymentId}`, {
                     method: 'DELETE'
                 }).catch((err) => console.error(err));
                 return updatedInvoice;
@@ -368,7 +379,7 @@ export const AppProvider = ({ children }) => {
                     }
                 };
                 setSettings(newSettings);
-                fetch('/api/settings', {
+                apiFetch('/api/settings', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(newSettings)
@@ -383,7 +394,7 @@ export const AppProvider = ({ children }) => {
             ...calculated
         };
         setQuotations((prev) => [newQuotation, ...prev]);
-        fetch('/api/quotes', {
+        apiFetch('/api/quotes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newQuotation)
@@ -397,7 +408,7 @@ export const AppProvider = ({ children }) => {
                 const merged = { ...quote, ...quoteData };
                 const calculated = recalculateQuoteTotals(merged, settings.tax.taxPercentage);
                 const updated = { ...merged, ...calculated };
-                fetch(`/api/quotes/${id}`, {
+                apiFetch(`/api/quotes/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(updated)
@@ -410,7 +421,7 @@ export const AppProvider = ({ children }) => {
     const deleteQuotation = (id) => {
         const q = quotations.find((quote) => quote.id === id);
         setQuotations((prev) => prev.filter((quote) => quote.id !== id));
-        fetch(`/api/quotes/${id}`, { method: 'DELETE' }).catch((err) => console.error(err));
+        apiFetch(`/api/quotes/${id}`, { method: 'DELETE' }).catch((err) => console.error(err));
         addLog('settings_update', `Quotation deleted: ${q?.quoteNumber || id}`);
     };
     const acceptQuotation = (id, reason) => {
@@ -464,7 +475,7 @@ export const AppProvider = ({ children }) => {
     const updateSettings = (updatedSettings) => {
         const merged = { ...settings, ...updatedSettings };
         setSettings(merged);
-        fetch('/api/settings', {
+        apiFetch('/api/settings', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(merged)
@@ -482,7 +493,7 @@ export const AppProvider = ({ children }) => {
             details: details || ''
         };
         setLogs((prev) => [newLog, ...prev]);
-        fetch('/api/logs', {
+        apiFetch('/api/logs', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newLog)
@@ -490,7 +501,7 @@ export const AppProvider = ({ children }) => {
     };
     const clearLogs = () => {
         setLogs([]);
-        fetch('/api/logs', { method: 'DELETE' }).catch((err) => console.error(err));
+        apiFetch('/api/logs', { method: 'DELETE' }).catch((err) => console.error(err));
     };
     // Mock Email Operations
     const sendMockEmail = (to, subject, body, buttonText, buttonUrl) => {
@@ -505,7 +516,7 @@ export const AppProvider = ({ children }) => {
             buttonUrl
         };
         setSentEmails((prev) => [newEmail, ...prev]);
-        fetch('/api/emails', {
+        apiFetch('/api/emails', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newEmail)

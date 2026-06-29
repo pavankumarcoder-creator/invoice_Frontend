@@ -40,10 +40,12 @@ export const Register = () => {
         }
         setErrors({});
         setIsLoading(true);
-        fetch('/api/auth/register', {
+        const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+        fetch(`${API_BASE}/api/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password })
+            body: JSON.stringify({ username, email, password }),
+            credentials: 'include'
         })
             .then((res) => {
             setIsLoading(false);
