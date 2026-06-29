@@ -9,7 +9,7 @@
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "build:backend": "npm --prefix backend run build",
     "build:frontend": "vite build",
-    "build": "npm run build:backend"
+    "build": "vite build"
   },
   "dependencies": {
     "framer-motion": "^11.15.0",
