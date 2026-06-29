@@ -5,7 +5,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 const apiFetch = (url, options = {}) => {
     const targetUrl = url.startsWith('/api') ? `${API_BASE}${url}` : url;
-    return apiFetch(targetUrl, {
+    return fetch(targetUrl, {
         ...options,
         credentials: 'include'
     });
