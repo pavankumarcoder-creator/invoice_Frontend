@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../components/ui/Toast';
-import { LayoutDashboard, FileSpreadsheet, FileSignature, Users, BarChart3, Settings as SettingsIcon, ChevronLeft, ChevronRight, Bell, Sun, Moon, LogOut, Mail, Plus, User } from 'lucide-react';
+import { LayoutDashboard, FileSpreadsheet, FileSignature, Users, BarChart3, Settings as SettingsIcon, ChevronLeft, ChevronRight, Bell, Sun, Moon, LogOut, Mail, Plus, User, Menu } from 'lucide-react';
 export const DashboardLayout = ({ children }) => {
     const { userProfile, updateUserProfile, logout, sentEmails, clients, settings } = useApp();
     const { showToast } = useToast();
     const navigate = useNavigate();
     const location = useLocation();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [notificationOpen, setNotificationOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     // Sync dark mode class
@@ -54,11 +55,19 @@ export const DashboardLayout = ({ children }) => {
     };
     return (<div className="min-h-screen flex bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
       
+      {/* Mobile Sidebar Overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs z-45 md:hidden" onClick={() => setMobileMenuOpen(false)}/>
+      )}
+
       {/* Sidebar */}
-      <aside className={`no-print flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition-all duration-300 ${sidebarCollapsed ? 'w-16' : 'w-64'}`}>
+      <aside className={`no-print flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition-all duration-300 z-50
+        fixed inset-y-0 left-0 md:relative md:translate-x-0
+        ${mobileMenuOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0'} 
+        ${sidebarCollapsed ? 'md:w-16 w-64' : 'md:w-64 w-64'}`}>
         {/* Sidebar Header */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200 dark:border-slate-800">
-          {!sidebarCollapsed && (<Link to="/" className="flex items-center gap-2.5">
+          {!sidebarCollapsed && (<Link to="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-black text-lg shadow-md shadow-blue-500/20">
                 {settings.business.name ? settings.business.name.slice(0, 2).toUpperCase() : 'IN'}
               </div>
@@ -72,11 +81,18 @@ export const DashboardLayout = ({ children }) => {
           <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-colors hidden md:block cursor-pointer">
             {sidebarCollapsed ? <ChevronRight className="h-4 w-4"/> : <ChevronLeft className="h-4 w-4"/>}
           </button>
+          {/* Close button on mobile side panel */}
+          <button onClick={() => setMobileMenuOpen(false)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-colors md:hidden cursor-pointer">
+            <ChevronLeft className="h-5 w-5"/>
+          </button>
         </div>
 
         {/* Sidebar Quick Action */}
         {!sidebarCollapsed && (<div className="p-3">
-            <button onClick={() => navigate('/invoices/create')} className="w-full py-2 px-4 rounded-lg bg-primary hover:bg-blue-600 text-white font-medium text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/10 cursor-pointer">
+            <button onClick={() => {
+              setMobileMenuOpen(false);
+              navigate('/invoices/create');
+            }} className="w-full py-2 px-4 rounded-lg bg-primary hover:bg-blue-600 text-white font-medium text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/10 cursor-pointer">
               <Plus className="h-4 w-4"/> Create Invoice
             </button>
           </div>)}
@@ -87,7 +103,7 @@ export const DashboardLayout = ({ children }) => {
             const isActive = item.path === '/'
                 ? location.pathname === '/'
                 : location.pathname.startsWith(item.path);
-            return (<Link key={item.label} to={item.path} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
+            return (<Link key={item.label} to={item.path} onClick={() => setMobileMenuOpen(false)} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
                     ? 'bg-blue-50/70 text-primary dark:bg-blue-950/20 dark:text-blue-400'
                     : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>
                 {item.icon}
@@ -99,7 +115,10 @@ export const DashboardLayout = ({ children }) => {
         {/* Sidebar Footer / Theme / User Profile */}
         <div className="p-3 border-t border-slate-200 dark:border-slate-800 space-y-2.5">
           {/* Theme Toggler */}
-          <button onClick={toggleTheme} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
+          <button onClick={() => {
+            setMobileMenuOpen(false);
+            toggleTheme();
+          }} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
             {userProfile.visualPreference === 'dark' ? (<>
                 <Sun className="h-5 w-5 text-amber-500"/>
                 {!sidebarCollapsed && <span>Light Mode</span>}
@@ -110,7 +129,10 @@ export const DashboardLayout = ({ children }) => {
           </button>
 
           {/* Logout */}
-          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
+          <button onClick={() => {
+            setMobileMenuOpen(false);
+            handleLogout();
+          }} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
             <LogOut className="h-5 w-5"/>
             {!sidebarCollapsed && <span>Logout</span>}
           </button>
@@ -121,11 +143,15 @@ export const DashboardLayout = ({ children }) => {
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         
         {/* Navbar */}
-        <header className="no-print h-16 flex items-center justify-between px-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40">
-          {/* Left: Breadcrumbs */}
+        <header className="no-print h-16 flex items-center justify-between px-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 gap-4">
+          {/* Left: Hamburger & Breadcrumbs */}
           <div className="flex items-center gap-3">
-            <span className="text-slate-400 dark:text-slate-500 text-sm">{settings.business.name || 'Dashboard'}</span>
-            <span className="text-slate-300 dark:text-slate-700">/</span>
+            {/* Toggle button on mobile */}
+            <button onClick={() => setMobileMenuOpen(true)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors md:hidden cursor-pointer" title="Open navigation drawer">
+              <Menu className="h-5 w-5"/>
+            </button>
+            <span className="text-slate-400 dark:text-slate-500 text-sm hidden sm:inline">{settings.business.name || 'Dashboard'}</span>
+            <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">/</span>
             <span className="text-slate-800 dark:text-slate-100 font-semibold text-sm font-outfit">
               {pageTitle}
             </span>
