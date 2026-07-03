@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 import { ToastProvider } from './components/ui/Toast';
 import { DashboardLayout } from './layouts/DashboardLayout';
@@ -63,7 +63,7 @@ const QuotePreviewWrapper = () => {
     </div>);
 };
 const App = () => {
-    return (<BrowserRouter>
+    return (<HashRouter>
       <Routes>
         {/* Auth Routes */}
         <Route path="/login" element={<AuthRoute><Login /></AuthRoute>}/>
@@ -99,7 +99,7 @@ const App = () => {
         {/* Fallback Catch */}
         <Route path="*" element={<Navigate to="/" replace/>}/>
       </Routes>
-    </BrowserRouter>);
+    </HashRouter>);
 };
 ReactDOM.createRoot(document.getElementById('root')).render(<React.StrictMode>
     <ToastProvider>
