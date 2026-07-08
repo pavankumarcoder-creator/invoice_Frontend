@@ -1,4 +1,4 @@
-# Ultrakey Invoice Manager - Client Web App (React & Vite)
+# Invoice Manager - Client Web App (React & Vite)
 
 A premium, state-of-the-art Single-Page Application (SPA) dashboard for invoice registry and quotation bookkeeping, designed with modern aesthetics and fully responsive grid-card views.
 
