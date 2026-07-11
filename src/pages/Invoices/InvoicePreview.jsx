@@ -286,7 +286,6 @@ export const InvoicePreview = () => {
                     <th className="pb-3 text-left w-16">{settings.translate.qtyLabel}</th>
                     <th className="pb-3 text-left">{settings.translate.serviceLabel}</th>
                     <th className="pb-3 text-right w-28">{settings.translate.rateLabel}</th>
-                    <th className="pb-3 text-right w-20">{settings.translate.adjustLabel}</th>
                     <th className="pb-3 text-right w-28">Sub Total</th>
                   </tr>
                 </thead>
@@ -298,10 +297,7 @@ export const InvoicePreview = () => {
                         {item.description && (<p className="text-[10px] text-slate-400 font-sans leading-relaxed">{item.description}</p>)}
                       </td>
                       <td className="py-3.5 text-right font-medium text-slate-700">{formatCurrency(item.rate)}</td>
-                      <td className="py-3.5 text-right font-medium text-slate-500">{item.adjustPercent.toFixed(2)}%</td>
-                      <td className="py-3.5 text-right font-bold text-slate-900 font-outfit">
-                        {formatCurrency(item.qty * item.rate * (1 + item.adjustPercent / 100))}
-                      </td>
+                      <td className="py-3.5 text-right font-bold text-slate-900">{formatCurrency(item.qty * item.rate)}</td>
                     </tr>))}
                 </tbody>
               </table>
