@@ -35,7 +35,6 @@ export const ClientForm = ({ client, onClose }) => {
         }
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
-            showToast('error', 'Form Error', 'Please check validation issues');
             return;
         }
         setErrors({});
