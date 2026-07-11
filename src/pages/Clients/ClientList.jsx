@@ -41,15 +41,14 @@ export const ClientList = () => {
             showToast('warning', 'Export Empty', 'No clients to export');
             return;
         }
-        const headers = ['Client ID', 'Business Name', 'Username', 'Email', 'Address', 'Extra Info', 'Website'];
+        const headers = ['Client ID', 'Business Name', 'Username', 'Email', 'Address', 'GST NO'];
         const rows = clients.map((c) => [
             c.id,
             `"${c.businessName.replace(/"/g, '""')}"`,
             c.username,
             c.email,
             `"${c.address.replace(/"/g, '""')}"`,
-            `"${c.extraInfo.replace(/"/g, '""')}"`,
-            c.website
+            `"${(c.gstNo || '').replace(/"/g, '""')}"`
         ]);
         const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -114,7 +113,9 @@ export const ClientList = () => {
                   </div>
                 </div>
                 <p className="text-xs text-slate-500 truncate">{client.email}</p>
-                <p className="text-[11px] text-slate-400 truncate">{client.website}</p>
+                {client.gstNo && (
+                  <p className="text-[11px] text-slate-400 truncate font-mono">GST: {client.gstNo}</p>
+                )}
               </div>
 
               {/* Stats Breakdown */}

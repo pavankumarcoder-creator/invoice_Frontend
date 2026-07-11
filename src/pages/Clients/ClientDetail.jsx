@@ -63,19 +63,15 @@ export const ClientDetail = () => {
                 <span className="break-all font-semibold text-slate-900 dark:text-slate-200">{client.email}</span>
               </div>
               <div className="flex items-start gap-2.5">
-                <Globe className="h-4 w-4 text-slate-400 mt-0.5"/>
-                {client.website ? (<a href={client.website} target="_blank" rel="noreferrer" className="text-primary hover:underline font-semibold">
-                    {client.website}
-                  </a>) : (<span className="text-slate-400">No website registered</span>)}
-              </div>
-              <div className="flex items-start gap-2.5">
                 <MapPin className="h-4 w-4 text-slate-400 mt-0.5"/>
                 <span className="whitespace-pre-line">{client.address}</span>
               </div>
-              {client.extraInfo && (<div className="bg-slate-50 dark:bg-slate-950 p-3 rounded-lg border border-slate-100 dark:border-slate-800 font-mono text-[10px]">
-                  <p className="uppercase font-bold text-slate-400 mb-1 text-[8px] tracking-wider">Extra Client Details</p>
-                  <div dangerouslySetInnerHTML={{ __html: client.extraInfo }}/>
-                </div>)}
+              {client.gstNo && (
+                <div className="flex items-start gap-2.5">
+                  <FileSignature className="h-4 w-4 text-slate-400 mt-0.5"/>
+                  <span className="font-semibold text-slate-900 dark:text-slate-200">GST NO: {client.gstNo}</span>
+                </div>
+              )}
             </div>
           </div>
 

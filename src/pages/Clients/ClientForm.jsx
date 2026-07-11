@@ -7,8 +7,7 @@ export const ClientForm = ({ client, onClose }) => {
     const { showToast } = useToast();
     const [businessName, setBusinessName] = useState('');
     const [address, setAddress] = useState('');
-    const [extraInfo, setExtraInfo] = useState('');
-    const [website, setWebsite] = useState('');
+    const [gstNo, setGstNo] = useState('');
     const [errors, setErrors] = useState({});
     const clearErr = (key) => setErrors(prev => { const n = { ...prev }; delete n[key]; return n; });
     const [isLoading, setIsLoading] = useState(false);
@@ -18,8 +17,7 @@ export const ClientForm = ({ client, onClose }) => {
         if (client) {
             setBusinessName(client.businessName);
             setAddress(client.address || '');
-            setExtraInfo(client.extraInfo || '');
-            setWebsite(client.website || '');
+            setGstNo(client.gstNo || '');
         }
     }, [client]);
 
@@ -46,8 +44,9 @@ export const ClientForm = ({ client, onClose }) => {
                 firstName: '',
                 lastName: '',
                 address,
-                extraInfo,
-                website
+                gstNo,
+                extraInfo: '',
+                website: ''
             };
             if (client) {
                 updateClient(client.id, payload);
@@ -79,16 +78,10 @@ export const ClientForm = ({ client, onClose }) => {
           <textarea value={address} onChange={(e) => setAddress(e.target.value)} className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus:border-primary focus:outline-hidden text-slate-900 dark:text-slate-100" rows={3}/>
         </div>
 
-        {/* Extra Info */}
+        {/* GST NO */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-slate-800 dark:text-slate-200">Extra Info</label>
-          <textarea value={extraInfo} onChange={(e) => setExtraInfo(e.target.value)} className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus:border-primary focus:outline-hidden text-slate-900 dark:text-slate-100" rows={2}/>
-        </div>
-
-        {/* Website */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-slate-800 dark:text-slate-200">Website</label>
-          <input type="text" value={website} onChange={(e) => setWebsite(e.target.value)} className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus:border-primary focus:outline-hidden text-slate-900 dark:text-slate-100 font-medium"/>
+          <label className="text-xs font-bold text-slate-800 dark:text-slate-200">GST NO</label>
+          <input type="text" value={gstNo} onChange={(e) => setGstNo(e.target.value)} className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus:border-primary focus:outline-hidden text-slate-900 dark:text-slate-100 font-medium" placeholder="e.g. 22AAAAA0000A1Z5"/>
         </div>
 
       </div>
