@@ -37,7 +37,6 @@ export const Register = () => {
         }
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
-            showToast('error', 'Registration Failed', 'Please review all form fields');
             return;
         }
         setErrors({});
@@ -87,7 +86,7 @@ export const Register = () => {
               {showConfirmPassword ? <EyeOff className="h-4 w-4"/> : <Eye className="h-4 w-4"/>}
             </button>}/>
 
-        <Button type="submit" className="w-full mt-2" isLoading={isLoading}>
+        <Button type="submit" className="w-full mt-2" isLoading={isLoading} disabled={!username.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()}>
           Create Account
         </Button>
       </form>
