@@ -72,7 +72,7 @@ export const Login = () => {
           </div>
         </div>
 
-        <Button type="submit" className="w-full mt-2" isLoading={isLoading} disabled={!loginId.trim() || !password.trim()}>
+        <Button type="submit" className="w-full mt-2" isLoading={isLoading}>
           Login
         </Button>
       </form>

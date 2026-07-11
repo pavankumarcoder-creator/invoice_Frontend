@@ -86,7 +86,7 @@ export const Register = () => {
               {showConfirmPassword ? <EyeOff className="h-4 w-4"/> : <Eye className="h-4 w-4"/>}
             </button>}/>
 
-        <Button type="submit" className="w-full mt-2" isLoading={isLoading} disabled={!username.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()}>
+        <Button type="submit" className="w-full mt-2" isLoading={isLoading}>
           Create Account
         </Button>
       </form>
