@@ -4,7 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { useToast } from '../../components/ui/Toast';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { Mail, Lock, User } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 export const Login = () => {
     const { login } = useApp();
     const { showToast } = useToast();
@@ -12,6 +12,7 @@ export const Login = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const handleLogin = (e) => {
@@ -63,7 +64,9 @@ export const Login = () => {
         <Input label="Email Address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} error={errors.email} leftIcon={<Mail className="h-4 w-4"/>} placeholder="e.g. admin@yourdomain.com"/>
 
         <div className="space-y-1">
-          <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} error={errors.password} leftIcon={<Lock className="h-4 w-4"/>} placeholder="••••••••"/>
+          <Input label="Password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} error={errors.password} leftIcon={<Lock className="h-4 w-4"/>} placeholder="••••••••" rightIcon={<button type="button" onClick={() => setShowPassword(!showPassword)} className="focus:outline-hidden hover:text-white text-slate-500 cursor-pointer transition-colors p-1" tabIndex="-1">
+                {showPassword ? <EyeOff className="h-4 w-4"/> : <Eye className="h-4 w-4"/>}
+              </button>}/>
           <div className="text-right">
             <Link to="/forgot-password" className="text-xs text-primary hover:text-blue-400 font-semibold">
               Forgot your password?
