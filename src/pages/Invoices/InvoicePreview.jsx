@@ -269,7 +269,7 @@ export const InvoicePreview = () => {
                     <p className="font-bold text-slate-900">{client.businessName}</p>
                     <p className="text-slate-500 leading-relaxed whitespace-pre-line sm:text-right">{client.address}</p>
                     <p className="text-slate-400 pt-1">{client.email}</p>
-                    {client.gstNo && (<p className="text-[10px] text-slate-500 pt-0.5 font-mono">GSTIN: {client.gstNo}</p>)}
+                    {client.gstNo && (<p className="text-[10px] text-slate-500 pt-0.5 font-mono">GST NO: {client.gstNo}</p>)}
                   </>) : (<p className="text-slate-400 italic">No Client Selected</p>)}
               </div>
             </div>
