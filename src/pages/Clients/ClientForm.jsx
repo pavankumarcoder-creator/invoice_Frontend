@@ -24,8 +24,14 @@ export const ClientForm = ({ client, onClose }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const newErrors = {};
-        if (!businessName) {
+        if (!businessName.trim()) {
             newErrors.businessName = 'Name is required';
+        }
+        if (!address.trim()) {
+            newErrors.address = 'Address is required';
+        }
+        if (!gstNo.trim()) {
+            newErrors.gstNo = 'GST NO is required';
         }
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
@@ -74,14 +80,16 @@ export const ClientForm = ({ client, onClose }) => {
 
         {/* Address */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-slate-800 dark:text-slate-200">Address</label>
-          <textarea value={address} onChange={(e) => setAddress(e.target.value)} className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus:border-primary focus:outline-hidden text-slate-900 dark:text-slate-100" rows={3}/>
+          <label className="text-xs font-bold text-slate-800 dark:text-slate-200">Address*</label>
+          <textarea value={address} onChange={(e) => { setAddress(e.target.value); clearErr('address'); }} className={`w-full rounded-lg border bg-white dark:bg-slate-900 px-3 py-2 text-sm focus:border-primary focus:outline-hidden text-slate-900 dark:text-slate-100 ${errors.address ? 'border-red-500 focus:border-red-500' : 'border-slate-300 dark:border-slate-700'}`} rows={3}/>
+          {errors.address && <p className="text-xs font-medium text-red-500">⚠ {errors.address}</p>}
         </div>
 
         {/* GST NO */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-slate-800 dark:text-slate-200">GST NO</label>
-          <input type="text" value={gstNo} onChange={(e) => setGstNo(e.target.value)} className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus:border-primary focus:outline-hidden text-slate-900 dark:text-slate-100 font-medium" placeholder="e.g. 22AAAAA0000A1Z5"/>
+          <label className="text-xs font-bold text-slate-800 dark:text-slate-200">GST NO*</label>
+          <input type="text" value={gstNo} onChange={(e) => { setGstNo(e.target.value); clearErr('gstNo'); }} className={`w-full rounded-lg border bg-white dark:bg-slate-900 px-3 py-2 text-sm focus:border-primary focus:outline-hidden text-slate-900 dark:text-slate-100 font-medium ${errors.gstNo ? 'border-red-500 focus:border-red-500' : 'border-slate-300 dark:border-slate-700'}`} placeholder="e.g. 22AAAAA0000A1Z5"/>
+          {errors.gstNo && <p className="text-xs font-medium text-red-500">⚠ {errors.gstNo}</p>}
         </div>
 
       </div>
