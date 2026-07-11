@@ -293,7 +293,10 @@ export const InvoicePreview = () => {
                   {inv.items.map((item) => (<tr key={item.id} className="align-top">
                       <td className="py-3.5 text-slate-700 font-bold">{item.qty}</td>
                       <td className="py-3.5 space-y-1">
-                        <p className="font-bold text-slate-900">{item.title}</p>
+                        <p className="font-bold text-slate-900 flex items-center gap-2">
+                          {item.title}
+                          {item.hsnCode && <span className="text-[10px] font-normal text-slate-400 font-sans">(HSN: {item.hsnCode})</span>}
+                        </p>
                         {item.description && (<p className="text-[10px] text-slate-400 font-sans leading-relaxed">{item.description}</p>)}
                       </td>
                       <td className="py-3.5 text-right font-medium text-slate-700">{formatCurrency(item.rate)}</td>
